@@ -1,3 +1,10 @@
+/* eslint-disable no-unused-vars */
+/* eslint-disable valid-jsdoc */
+/* eslint-disable no-proto */
+/* eslint-disable no-void */
+/* eslint-disable no-undefined */
+/* eslint-disable no-inline-comments */
+/* eslint-disable guard-for-in */
 /* Inspire Tree DOM
  * @version 4.0.6
  * https://github.com/helion3/inspire-tree-dom
@@ -5,17 +12,19 @@
  * @license Licensed under MIT
  *          see https://github.com/helion3/inspire-tree-dom/blob/master/LICENSE
  */
-(function (global, factory) {
+(function(global, factory) {
+    // eslint-disable-next-line no-nested-ternary
     typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory(require('lodash'), require('inspire-tree')) :
-    typeof define === 'function' && define.amd ? define(['lodash', 'inspire-tree'], factory) :
-    (global.InspireTreeDOM = factory(global._,global.InspireTree));
-}(this, (function (_,InspireTree) { 'use strict';
+        typeof define === 'function' && define.amd ? define(['lodash', 'inspire-tree'], factory) :
+            (global.InspireTreeDOM = factory(global._, global.InspireTree));
+}(this, (function(_, InspireTree) {
+    'use strict';
 
-    InspireTree = InspireTree && InspireTree.hasOwnProperty('default') ? InspireTree['default'] : InspireTree;
+    InspireTree = InspireTree && InspireTree.hasOwnProperty('default') ? InspireTree.default : InspireTree;
 
     var NO_OP = '$NO_OP';
     var ERROR_MSG = 'a runtime error occured! Use Inferno in development environment to find the error.';
-    var isBrowser = !!(typeof window !== 'undefined' && window.document);
+    var isBrowser = Boolean(typeof window !== 'undefined' && window.document);
     var isArray = Array.isArray;
     function isStringOrNumber(o) {
         var type = typeof o;
@@ -49,7 +58,7 @@
         if (!message) {
             message = ERROR_MSG;
         }
-        throw new Error(("Inferno Error: " + message));
+        throw new Error(('Inferno Error: ' + message));
     }
     function combineFrom(first, second) {
         var out = {};
@@ -93,6 +102,7 @@
         if ((flags & 2 /* ComponentUnknown */) > 0) {
             flags = type.prototype && isFunction(type.prototype.render) ? 4 /* ComponentClass */ : 8 /* ComponentFunction */;
         }
+
         // set default props
         var defaultProps = type.defaultProps;
         if (!isNullOrUndef(defaultProps)) {
@@ -231,7 +241,7 @@
         }
         else if (isNumber(children)) {
             newChildFlags = 2 /* HasVNodeChildren */;
-            newChildren = createTextVNode(children + '');
+            newChildren = createTextVNode(String(children));
         }
         else if (isArray(children)) {
             var len = children.length;
@@ -244,7 +254,7 @@
                 // if it comes back again, we need to clone it, as people are using it
                 // in an immutable way
                 // tslint:disable-next-line
-                if (Object.isFrozen(children) || children['$'] === true) {
+                if (Object.isFrozen(children) || children.$ === true) {
                     children = children.slice();
                 }
                 newChildFlags = 8 /* HasKeyedChildren */;
@@ -417,7 +427,7 @@
         }
     }
     function attachEventToDocument(name) {
-        var docEvent = function (event) {
+        var docEvent = function(event) {
             var type = event.type;
             var isClick = type === 'click' || type === 'dblclick';
             if (isClick && event.button !== 0) {
@@ -428,6 +438,7 @@
                 return false;
             }
             event.stopPropagation = stopPropagation;
+
             // Event data needs to be object to save reference to currentTarget getter
             var eventData = {
                 dom: document
@@ -472,9 +483,10 @@
         }
     }
     function createWrappedFunction(methodName, applyValue) {
-        var fnMethod = function (e) {
+        var fnMethod = function(e) {
             e.stopPropagation();
             var vNode = this.$V;
+
             // If vNode is gone by the time event fires, no-op
             if (!vNode) {
                 return;
@@ -509,6 +521,7 @@
     }
     var onTextInputChange = createWrappedFunction('onInput', applyValueInput);
     var wrappedOnChange = createWrappedFunction(['onClick', 'onChange'], applyValueInput);
+
     /* tslint:disable-next-line:no-empty */
     function emptywrapper(event) {
         event.stopPropagation();
@@ -537,7 +550,7 @@
             dom.multiple = multiple;
         }
         if (!isNullOrUndef(defaultValue) && !hasValue) {
-            dom.defaultValue = defaultValue + '';
+            dom.defaultValue = String(defaultValue);
         }
         if (isCheckedType(type)) {
             if (hasValue) {
@@ -547,14 +560,12 @@
                 dom.checked = checked;
             }
         }
-        else {
-            if (hasValue && dom.value !== value) {
-                dom.defaultValue = value;
-                dom.value = value;
-            }
-            else if (!isNullOrUndef(checked)) {
-                dom.checked = checked;
-            }
+        else if (hasValue && dom.value !== value) {
+            dom.defaultValue = value;
+            dom.value = value;
+        }
+        else if (!isNullOrUndef(checked)) {
+            dom.checked = checked;
         }
     }
 
@@ -579,6 +590,7 @@
     function updateChildOption(vNode, value) {
         var props = vNode.props || EMPTY_OBJ;
         var dom = vNode.dom;
+
         // we do this as multiple may have changed
         dom.value = props.value;
         if ((isArray(value) && value.indexOf(props.value) !== -1) || props.value === value) {
@@ -680,6 +692,7 @@
         unmount(vNode);
         if (parentDom && vNode.dom) {
             removeChild(parentDom, vNode.dom);
+
             // Let carbage collector free memory
             vNode.dom = null;
         }
@@ -727,6 +740,7 @@
         }
         else {
             var children$1 = vNode.children;
+
             // Safe guard for crashed VNode
             if (children$1) {
                 if (flags & 14 /* Component */) {
@@ -767,7 +781,7 @@
     }
 
     function createLinkEvent(linkEvent, nextValue) {
-        return function (e) {
+        return function(e) {
             linkEvent(nextValue.data, e);
         };
     }
@@ -781,6 +795,7 @@
         }
         else {
             var domEvent = dom[nameLowerCase];
+
             // if the function is wrapped, that means it's been controlled by a wrapper
             if (!domEvent || !domEvent.wrapped) {
                 dom[nameLowerCase] = nextValue;
@@ -828,6 +843,7 @@
                 return value + 'px';
         }
     }
+
     // We are assuming here that we come from patchProp routine
     // -nextAttrValue cannot be null or undefined
     function patchStyle(lastAttrValue, nextAttrValue, dom) {
@@ -886,7 +902,7 @@
             case 'ref':
                 break;
             case 'autoFocus':
-                dom.autofocus = !!nextValue;
+                dom.autofocus = Boolean(nextValue);
                 break;
             case 'allowfullscreen':
             case 'autoplay':
@@ -907,7 +923,7 @@
             case 'scoped':
             case 'seamless':
             case 'selected':
-                dom[prop] = !!nextValue;
+                dom[prop] = Boolean(nextValue);
                 break;
             case 'defaultChecked':
             case 'value':
@@ -1141,7 +1157,7 @@
         return dom;
     }
     function createClassMountCallback(instance) {
-        return function () {
+        return function() {
             instance.componentDidMount();
         };
     }
@@ -1154,7 +1170,9 @@
         }
     }
     function createOnMountCallback(ref, dom, props) {
-        return function () { return ref.onComponentDidMount(dom, props); };
+        return function() {
+            return ref.onComponentDidMount(dom, props);
+        };
     }
     function mountFunctionalComponentCallbacks(props, ref, dom) {
         if (!isNullOrUndef(ref)) {
@@ -1167,7 +1185,9 @@
         }
     }
     function mountRef(dom, value) {
-        LIFECYCLE.push(function () { return value(dom); });
+        LIFECYCLE.push(function() {
+            return value(dom);
+        });
     }
 
     function hydrateComponent(vNode, dom, context, isSVG, isClass) {
@@ -1244,6 +1264,7 @@
                         }
                     }
                 }
+
                 // clear any other DOM nodes, there should be only a single entry for the root
                 while (childNode) {
                     nextSibling = childNode.nextSibling;
@@ -1316,6 +1337,7 @@
                 hydrateVNode(input, dom, EMPTY_OBJ, false);
             }
             dom = parentDom.firstChild;
+
             // clear any other DOM nodes, there should be only a single entry for the root
             while ((dom = dom.nextSibling)) {
                 parentDom.removeChild(dom);
@@ -1326,6 +1348,7 @@
         }
         parentDom.$V = input;
         if (isFunction(callback)) {
+            // eslint-disable-next-line callback-return
             callback();
         }
     }
@@ -1422,6 +1445,7 @@
             if (isFormElement) {
                 processElement(nextFlags, nextVNode, dom, nextPropsOrEmpty, false, hasControlledValue);
             }
+
             // inlined patchProps  -- ends --
             if (lastClassName !== nextClassName) {
                 if (isNullOrUndef(nextClassName)) {
@@ -1471,6 +1495,7 @@
                 if (nextChildFlags & 12 /* MultipleChildren */) {
                     var lastLength = lastChildren.length;
                     var nextLength = nextChildren.length;
+
                     // Fast path's for both algorithms
                     if (lastLength === 0) {
                         if (nextLength > 0) {
@@ -1509,6 +1534,7 @@
             if (!fromSetState && isFunction(instance.componentWillReceiveProps)) {
                 instance.$BR = true;
                 instance.componentWillReceiveProps(nextProps, context);
+
                 // If instance component was removed during its own update do nothing...
                 if (instance.$UN) {
                     return;
@@ -1521,6 +1547,7 @@
                 instance.$PS = null;
             }
         }
+
         /* Update if scu is not defined, or it returns truthy value or force */
         var hasSCU = Boolean(instance.shouldComponentUpdate);
         if (force || !hasSCU || (hasSCU && instance.shouldComponentUpdate(nextProps, nextState, context))) {
@@ -1619,6 +1646,7 @@
         var nextText = nextVNode.children;
         var textNode = parentDom.firstChild;
         var dom;
+
         // Guard against external change on DOM node.
         if (isNull(textNode)) {
             parentDom.textContent = nextText;
@@ -1669,6 +1697,7 @@
         var aNode = a[j];
         var bNode = b[j];
         var nextPos;
+
         // Step 1
         // tslint:disable-next-line
         outer: {
@@ -1688,6 +1717,7 @@
             }
             aNode = a[aEnd];
             bNode = b[bEnd];
+
             // Sync nodes with the same key at the end.
             while (aNode.key === bNode.key) {
                 if (bNode.dom) {
@@ -1732,11 +1762,13 @@
             for (i = 0; i < bLeft; i++) {
                 sources.push(0);
             }
+
             // Keep track if its possible to remove whole DOM using textContent = '';
             var canRemoveWholeContent = aLeft === aLength;
             var moved = false;
             var pos = 0;
             var patched = 0;
+
             // When sizes are small, just loop them through
             if (bLength < 4 || (aLeft | bLeft) < 32) {
                 for (i = aStart; i <= aEnd; i++) {
@@ -1777,10 +1809,12 @@
             }
             else {
                 var keyIndex = {};
+
                 // Map keys by their index
                 for (i = bStart; i <= bEnd; i++) {
                     keyIndex[b[i].key] = i;
                 }
+
                 // Try to patch same keys
                 for (i = aStart; i <= aEnd; i++) {
                     aNode = a[i];
@@ -1816,55 +1850,56 @@
                     }
                 }
             }
+
             // fast-path: if nothing patched remove all old and add all new
             if (canRemoveWholeContent) {
                 removeAllChildren(dom, a);
                 mountArrayChildren(b, dom, context, isSVG);
             }
-            else {
-                if (moved) {
-                    var seq = lis_algorithm(sources);
-                    j = seq.length - 1;
-                    for (i = bLeft - 1; i >= 0; i--) {
-                        if (sources[i] === 0) {
-                            pos = i + bStart;
-                            bNode = b[pos];
-                            if (bNode.dom) {
-                                b[pos] = bNode = directClone(bNode);
-                            }
-                            nextPos = pos + 1;
-                            insertOrAppend(dom, mount(bNode, null, context, isSVG), nextPos < bLength ? b[nextPos].dom : null);
+            else if (moved) {
+                var seq = lis_algorithm(sources);
+                j = seq.length - 1;
+                for (i = bLeft - 1; i >= 0; i--) {
+                    if (sources[i] === 0) {
+                        pos = i + bStart;
+                        bNode = b[pos];
+                        if (bNode.dom) {
+                            b[pos] = bNode = directClone(bNode);
                         }
-                        else if (j < 0 || i !== seq[j]) {
-                            pos = i + bStart;
-                            bNode = b[pos];
-                            nextPos = pos + 1;
-                            insertOrAppend(dom, bNode.dom, nextPos < bLength ? b[nextPos].dom : null);
-                        }
-                        else {
-                            j--;
-                        }
+                        nextPos = pos + 1;
+                        insertOrAppend(dom, mount(bNode, null, context, isSVG), nextPos < bLength ? b[nextPos].dom : null);
+                    }
+                    else if (j < 0 || i !== seq[j]) {
+                        pos = i + bStart;
+                        bNode = b[pos];
+                        nextPos = pos + 1;
+                        insertOrAppend(dom, bNode.dom, nextPos < bLength ? b[nextPos].dom : null);
+                    }
+                    else {
+                        j--;
                     }
                 }
-                else if (patched !== bLeft) {
-                    // when patched count doesn't match b length we need to insert those new ones
-                    // loop backwards so we can use insertBefore
-                    for (i = bLeft - 1; i >= 0; i--) {
-                        if (sources[i] === 0) {
-                            pos = i + bStart;
-                            bNode = b[pos];
-                            if (bNode.dom) {
-                                b[pos] = bNode = directClone(bNode);
-                            }
-                            nextPos = pos + 1;
-                            insertOrAppend(dom, mount(bNode, null, context, isSVG), nextPos < bLength ? b[nextPos].dom : null);
+            }
+            else if (patched !== bLeft) {
+                // when patched count doesn't match b length we need to insert those new ones
+                // loop backwards so we can use insertBefore
+                for (i = bLeft - 1; i >= 0; i--) {
+                    if (sources[i] === 0) {
+                        pos = i + bStart;
+                        bNode = b[pos];
+                        if (bNode.dom) {
+                            b[pos] = bNode = directClone(bNode);
                         }
+                        nextPos = pos + 1;
+                        insertOrAppend(dom, mount(bNode, null, context, isSVG), nextPos < bLength ? b[nextPos].dom : null);
                     }
                 }
             }
         }
     }
+
     // https://en.wikipedia.org/wiki/Longest_increasing_subsequence
+    // eslint-disable-next-line camelcase
     function lis_algorithm(arr) {
         var p = arr.slice();
         var result = [0];
@@ -1932,23 +1967,22 @@
                 rootInput = input;
             }
         }
+        else if (isNullOrUndef(input)) {
+            remove(rootInput, parentDom);
+            parentDom.$V = null;
+        }
         else {
-            if (isNullOrUndef(input)) {
-                remove(rootInput, parentDom);
-                parentDom.$V = null;
+            if (input.dom) {
+                input = directClone(input);
             }
-            else {
-                if (input.dom) {
-                    input = directClone(input);
-                }
-                patch(rootInput, input, parentDom, EMPTY_OBJ, false);
-                rootInput = parentDom.$V = input;
-            }
+            patch(rootInput, input, parentDom, EMPTY_OBJ, false);
+            rootInput = parentDom.$V = input;
         }
         if (LIFECYCLE.length > 0) {
             callAll(LIFECYCLE);
         }
         if (isFunction(callback)) {
+            // eslint-disable-next-line callback-return
             callback();
         }
         if (isFunction(options.renderComplete)) {
@@ -1960,6 +1994,7 @@
     }
 
     var resolvedPromise = typeof Promise === 'undefined' ? null : Promise.resolve();
+
     // raf.bind(window) is needed to work around bug in IE10-IE11 strict mode (TypeError: Invalid calling object)
     var fallbackMethod = typeof requestAnimationFrame === 'undefined' ? setTimeout : requestAnimationFrame.bind(window);
     function nextTick(fn) {
@@ -2008,10 +2043,10 @@
         }
     }
     function promiseCallback(component, queue) {
-        return function () {
+        return function() {
             component.$QU = null;
             component.$UPD = true;
-            applyState(component, false, function () {
+            applyState(component, false, function() {
                 for (var i = 0, len = queue.length; i < len; i++) {
                     queue[i].call(component);
                 }
@@ -2060,6 +2095,7 @@
     }
     var Component = function Component(props, context) {
         this.state = null;
+
         // Internal properties
         this.$BR = false; // BLOCK RENDER
         this.$BS = true; // BLOCK STATE
@@ -2073,17 +2109,19 @@
         this.$QU = null; // QUEUE
         /** @type {object} */
         this.props = props || EMPTY_OBJ;
+
         /** @type {object} */
         this.context = context || EMPTY_OBJ; // context should not be mutable
     };
-    Component.prototype.forceUpdate = function forceUpdate (callback) {
+    Component.prototype.forceUpdate = function forceUpdate(callback) {
         if (this.$UN) {
             return;
         }
+
         // Do not allow double render during force update
         queueStateChanges(this, {}, callback, true);
     };
-    Component.prototype.setState = function setState (newState, callback) {
+    Component.prototype.setState = function setState(newState, callback) {
         if (this.$UN) {
             return;
         }
@@ -2094,12 +2132,13 @@
             return;
         }
     };
+
     // tslint:disable-next-line:no-empty
-    Component.prototype.render = function render (nextProps, nextState, nextContext) { };
+    Component.prototype.render = function render(nextProps, nextState, nextContext) { };
 
 
-
-    var JSX = /*#__PURE__*/Object.freeze({
+    // eslint-disable-next-line no-unused-vars
+    var JSX = /* #__PURE__*/Object.freeze({
 
     });
 
@@ -2127,73 +2166,82 @@
         };
     }
 
-    var classCallCheck = function (instance, Constructor) {
-      if (!(instance instanceof Constructor)) {
-        throw new TypeError("Cannot call a class as a function");
-      }
-    };
-
-    var createClass = function () {
-      function defineProperties(target, props) {
-        for (var i = 0; i < props.length; i++) {
-          var descriptor = props[i];
-          descriptor.enumerable = descriptor.enumerable || false;
-          descriptor.configurable = true;
-          if ("value" in descriptor) descriptor.writable = true;
-          Object.defineProperty(target, descriptor.key, descriptor);
+    var classCallCheck = function(instance, Constructor) {
+        if (!(instance instanceof Constructor)) {
+            throw new TypeError('Cannot call a class as a function');
         }
-      }
+    };
 
-      return function (Constructor, protoProps, staticProps) {
-        if (protoProps) defineProperties(Constructor.prototype, protoProps);
-        if (staticProps) defineProperties(Constructor, staticProps);
-        return Constructor;
-      };
-    }();
-
-    var _extends = Object.assign || function (target) {
-      for (var i = 1; i < arguments.length; i++) {
-        var source = arguments[i];
-
-        for (var key in source) {
-          if (Object.prototype.hasOwnProperty.call(source, key)) {
-            target[key] = source[key];
-          }
+    var createClass = (function() {
+        function defineProperties(target, props) {
+            for (var i = 0; i < props.length; i++) {
+                var descriptor = props[i];
+                descriptor.enumerable = descriptor.enumerable || false;
+                descriptor.configurable = true;
+                if ('value' in descriptor) {
+                    descriptor.writable = true;
+                }
+                Object.defineProperty(target, descriptor.key, descriptor);
+            }
         }
-      }
 
-      return target;
-    };
+        return function(Constructor, protoProps, staticProps) {
+            if (protoProps) {
+                defineProperties(Constructor.prototype, protoProps);
+            }
+            if (staticProps) {
+                defineProperties(Constructor, staticProps);
+            }
+            return Constructor;
+        };
+    }());
 
-    var inherits = function (subClass, superClass) {
-      if (typeof superClass !== "function" && superClass !== null) {
-        throw new TypeError("Super expression must either be null or a function, not " + typeof superClass);
-      }
+    var _extends = Object.assign || function(target) {
+        for (var i = 1; i < arguments.length; i++) {
+            var source = arguments[i];
 
-      subClass.prototype = Object.create(superClass && superClass.prototype, {
-        constructor: {
-          value: subClass,
-          enumerable: false,
-          writable: true,
-          configurable: true
+            for (var key in source) {
+                if (Object.prototype.hasOwnProperty.call(source, key)) {
+                    target[key] = source[key];
+                }
+            }
         }
-      });
-      if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;
+
+        return target;
     };
 
-    var possibleConstructorReturn = function (self, call) {
-      if (!self) {
-        throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
-      }
+    var inherits = function(subClass, superClass) {
+        if (typeof superClass !== 'function' && superClass !== null) {
+            throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass);
+        }
 
-      return call && (typeof call === "object" || typeof call === "function") ? call : self;
+        subClass.prototype = Object.create(superClass && superClass.prototype, {
+            constructor: {
+                value: subClass,
+                enumerable: false,
+                writable: true,
+                configurable: true
+            }
+        });
+        if (superClass) {
+            Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;
+        }
     };
 
-    var Checkbox = function (_Component) {
+    var possibleConstructorReturn = function(self, call) {
+        if (!self) {
+            throw new ReferenceError('this hasn\'t been initialised - super() hasn\'t been called');
+        }
+
+        return call && (typeof call === 'object' || typeof call === 'function') ? call : self;
+    };
+
+    var Checkbox = (function(_Component) {
         inherits(Checkbox, _Component);
 
         function Checkbox() {
             classCallCheck(this, Checkbox);
+            // eslint-disable-next-line no-proto
             return possibleConstructorReturn(this, (Checkbox.__proto__ || Object.getPrototypeOf(Checkbox)).apply(this, arguments));
         }
 
@@ -2219,15 +2267,15 @@
             key: 'render',
             value: function render$$1() {
                 return createVNode(64, 'input', null, null, 1, {
-                    'checked': this.props.checked,
-                    'indeterminate': this.props.indeterminate,
-                    'onClick': this.click.bind(this),
-                    'type': 'checkbox'
+                    checked: this.props.checked,
+                    indeterminate: this.props.indeterminate,
+                    onClick: this.click.bind(this),
+                    type: 'checkbox'
                 });
             }
         }]);
         return Checkbox;
-    }(Component);
+    }(Component));
 
     /**
      * Utility method for parsing and merging custom class names.
@@ -2237,7 +2285,7 @@
      * @param {string} type 'li' or 'a' attribute object type.
      * @return {Array} Processed class names
      */
-    var classlist = (function (node) {
+    var classlist = (function(node) {
         var type = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 'li';
 
         var nodeAttrs = node.itree[type].attributes;
@@ -2256,7 +2304,8 @@
             if (_.isString(customClasses)) {
                 // Support periods for backwards compat with hyperscript-formatted classes
                 classNames = classNames.concat(customClasses.split(/[\s\.]+/));
-            } else if (_.isArray(customClasses)) {
+            }
+            else if (_.isArray(customClasses)) {
                 classNames = classNames.concat(customClasses);
             }
         }
@@ -2264,11 +2313,12 @@
         return classNames;
     });
 
-    var EditToolbar = function (_Component) {
+    var EditToolbar = (function(_Component) {
         inherits(EditToolbar, _Component);
 
         function EditToolbar() {
             classCallCheck(this, EditToolbar);
+            // eslint-disable-next-line no-proto
             return possibleConstructorReturn(this, (EditToolbar.__proto__ || Object.getPrototypeOf(EditToolbar)).apply(this, arguments));
         }
 
@@ -2306,22 +2356,22 @@
 
                 if (this.props.dom._tree.config.editing.edit) {
                     buttons.push(createVNode(1, 'a', 'btn icon icon-pencil', null, 1, {
-                        'onclick': this.edit.bind(this),
-                        'title': 'Edit this node'
+                        onclick: this.edit.bind(this),
+                        title: 'Edit this node'
                     }));
                 }
 
                 if (this.props.dom._tree.config.editing.add) {
                     buttons.push(createVNode(1, 'a', 'btn icon icon-plus', null, 1, {
-                        'onclick': this.add.bind(this),
-                        'title': 'Add a child node'
+                        onclick: this.add.bind(this),
+                        title: 'Add a child node'
                     }));
                 }
 
                 if (this.props.dom._tree.config.editing.remove) {
                     buttons.push(createVNode(1, 'a', 'btn icon icon-minus', null, 1, {
-                        'onclick': this.remove.bind(this),
-                        'title': 'Remove this node'
+                        onclick: this.remove.bind(this),
+                        title: 'Remove this node'
                     }));
                 }
 
@@ -2329,13 +2379,14 @@
             }
         }]);
         return EditToolbar;
-    }(Component);
+    }(Component));
 
-    var EmptyList = function (_Component) {
+    var EmptyList = (function(_Component) {
         inherits(EmptyList, _Component);
 
         function EmptyList() {
             classCallCheck(this, EmptyList);
+            // eslint-disable-next-line no-proto
             return possibleConstructorReturn(this, (EmptyList.__proto__ || Object.getPrototypeOf(EmptyList)).apply(this, arguments));
         }
 
@@ -2346,7 +2397,7 @@
             }
         }]);
         return EmptyList;
-    }(Component);
+    }(Component));
 
     /**
      * Compares all keys on the given state. Returns true if any difference exists.
@@ -2362,7 +2413,7 @@
         var isDirty = currentState.dirty || false;
 
         if (!isDirty) {
-            _.each(Object.keys(currentState), function (key) {
+            _.each(Object.keys(currentState), function(key) {
                 if (key !== 'dirty' && currentState[key] !== previousState[key]) {
                     isDirty = true;
                     return false;
@@ -2373,12 +2424,13 @@
         return isDirty;
     }
 
-    var EditForm = function (_Component) {
+    var EditForm = (function(_Component) {
         inherits(EditForm, _Component);
 
         function EditForm(props) {
             classCallCheck(this, EditForm);
 
+            // eslint-disable-next-line no-proto
             var _this = possibleConstructorReturn(this, (EditForm.__proto__ || Object.getPrototypeOf(EditForm)).call(this, props));
 
             _this.state = _this.getStateFromNodes(props.node);
@@ -2472,37 +2524,38 @@
                 var _this3 = this;
 
                 return createVNode(1, 'form', null, [createVNode(64, 'input', null, null, 1, {
-                    'onClick': function onClick(event) {
+                    onClick: function onClick(event) {
                         return event.stopPropagation;
                     },
-                    'onInput': this.input.bind(this),
-                    'onKeyPress': this.keypress.bind(this),
-                    'value': this.state.text
-                }, null, function (elem) {
+                    onInput: this.input.bind(this),
+                    onKeyPress: this.keypress.bind(this),
+                    value: this.state.text
+                }, null, function(elem) {
                     return _this3.ref = elem;
                 }), createVNode(1, 'span', 'btn-group', [createVNode(1, 'button', 'btn icon icon-check', null, 1, {
-                    'onClick': this.save.bind(this),
-                    'title': 'Save',
-                    'type': 'button'
+                    onClick: this.save.bind(this),
+                    title: 'Save',
+                    type: 'button'
                 }), createVNode(1, 'button', 'btn icon icon-cross', null, 1, {
-                    'onClick': this.cancel.bind(this),
-                    'title': 'Cancel',
-                    'type': 'button'
+                    onClick: this.cancel.bind(this),
+                    title: 'Cancel',
+                    type: 'button'
                 })], 4)], 4, {
-                    'onsubmit': function onsubmit(event) {
+                    onsubmit: function onsubmit(event) {
                         return event.preventDefault;
                     }
                 });
             }
         }]);
         return EditForm;
-    }(Component);
+    }(Component));
 
-    var NodeAnchor = function (_Component) {
+    var NodeAnchor = (function(_Component) {
         inherits(NodeAnchor, _Component);
 
         function NodeAnchor() {
             classCallCheck(this, NodeAnchor);
+            // eslint-disable-next-line no-proto
             return possibleConstructorReturn(this, (NodeAnchor.__proto__ || Object.getPrototypeOf(NodeAnchor)).apply(this, arguments));
         }
 
@@ -2546,7 +2599,8 @@
                         if (!dom._tree.config.selection.disableDirectDeselection) {
                             node.deselect();
                         }
-                    } else {
+                    }
+                    else {
                         node.select();
                     }
 
@@ -2628,30 +2682,31 @@
                 var content = node.text;
                 if (node.editing()) {
                     content = createComponentVNode(2, EditForm, {
-                        'dom': this.props.dom,
-                        'node': this.props.node
+                        dom: this.props.dom,
+                        node: this.props.node
                     });
                 }
 
                 return normalizeProps(createVNode(1, 'a', null, content, 0, _extends({
                     'data-uid': node.id,
-                    'onBlur': this.blur.bind(this),
-                    'onClick': this.click.bind(this),
-                    'onContextMenu': this.contextMenu.bind(this),
-                    'onDblClick': this.dblclick.bind(this),
-                    'onFocus': this.focus.bind(this),
-                    'onMouseDown': this.mousedown.bind(this)
+                    onBlur: this.blur.bind(this),
+                    onClick: this.click.bind(this),
+                    onContextMenu: this.contextMenu.bind(this),
+                    onDblClick: this.dblclick.bind(this),
+                    onFocus: this.focus.bind(this),
+                    onMouseDown: this.mousedown.bind(this)
                 }, attributes)));
             }
         }]);
         return NodeAnchor;
-    }(Component);
+    }(Component));
 
-    var ToggleAnchor = function (_Component) {
+    var ToggleAnchor = (function(_Component) {
         inherits(ToggleAnchor, _Component);
 
         function ToggleAnchor() {
             classCallCheck(this, ToggleAnchor);
+            // eslint-disable-next-line no-proto
             return possibleConstructorReturn(this, (ToggleAnchor.__proto__ || Object.getPrototypeOf(ToggleAnchor)).apply(this, arguments));
         }
 
@@ -2664,19 +2719,20 @@
             key: 'render',
             value: function render$$1() {
                 return createVNode(1, 'a', this.className(), null, 1, {
-                    'onClick': this.props.node.toggleCollapse.bind(this.props.node)
+                    onClick: this.props.node.toggleCollapse.bind(this.props.node)
                 });
             }
         }]);
         return ToggleAnchor;
-    }(Component);
+    }(Component));
 
-    var ListItem = function (_Component) {
+    var ListItem = (function(_Component) {
         inherits(ListItem, _Component);
 
         function ListItem(props) {
             classCallCheck(this, ListItem);
 
+            // eslint-disable-next-line no-proto
             var _this = possibleConstructorReturn(this, (ListItem.__proto__ || Object.getPrototypeOf(ListItem)).call(this, props));
 
             _this.state = _this.stateFromNode(props.node);
@@ -2722,7 +2778,8 @@
                     if (node.state('drop-target')) {
                         attributes.onDragOver = this.onDragOver.bind(this);
                         attributes.onDrop = this.onDrop.bind(this);
-                    } else {
+                    }
+                    else {
                         // Setting to null forces removal of prior listeners
                         attributes.onDragOver = null;
                         attributes.onDrop = null;
@@ -2741,7 +2798,7 @@
                 var classNames = classlist(node);
 
                 // https://jsperf.com/object-keys-vs-each
-                _.each(Object.keys(state), function (key) {
+                _.each(Object.keys(state), function(key) {
                     if (state[key]) {
                         classNames.push(key);
                     }
@@ -2773,7 +2830,8 @@
 
                 if (clientY <= yThresholdForAbove) {
                     dir = -1;
-                } else if (clientY >= yThresholdForBelow) {
+                }
+                else if (clientY >= yThresholdForBelow) {
                     dir = 1;
                 }
 
@@ -2812,10 +2870,11 @@
                     // should mean "do not descend" rather than "stop iterating"
                     var recursor = function recursor(obj, iteratee) {
                         if (InspireTree.isTreeNodes(obj)) {
-                            _.each(obj, function (n) {
+                            _.each(obj, function(n) {
                                 recursor(n, iteratee);
                             });
-                        } else if (InspireTree.isTreeNode(obj)) {
+                        }
+                        else if (InspireTree.isTreeNode(obj)) {
                             if (iteratee(obj) !== false && obj.hasChildren()) {
                                 recursor(obj.children, iteratee);
                             }
@@ -2824,7 +2883,7 @@
 
                     this.props.dom._tree.batch();
 
-                    recursor(this.props.dom._tree.model, function (n) {
+                    recursor(this.props.dom._tree.model, function(n) {
                         var valid = n.id !== node.id;
 
                         // Ensure target node isn't a descendant
@@ -2953,7 +3012,8 @@
                 var sourceTree = void 0;
                 if (treeId === this.props.dom._tree.id) {
                     sourceTree = this.props.dom._tree;
-                } else if (treeId) {
+                }
+                else if (treeId) {
                     sourceTree = document.querySelector('[data-uid="' + treeId + '"]').inspireTree;
                 }
 
@@ -2978,7 +3038,8 @@
 
                         // Auto-expand
                         targetNode.expand();
-                    } else {
+                    }
+                    else {
                         // Determine the new index
                         newIndex = dir === 1 ? ++targetIndex : targetIndex;
 
@@ -3001,10 +3062,10 @@
 
                 if (this.props.dom.config.showCheckboxes) {
                     return createComponentVNode(2, Checkbox, {
-                        'checked': node.checked(),
-                        'dom': this.props.dom,
-                        'indeterminate': node.indeterminate(),
-                        'node': node
+                        checked: node.checked(),
+                        dom: this.props.dom,
+                        indeterminate: node.indeterminate(),
+                        node: node
                     });
                 }
             }
@@ -3022,21 +3083,23 @@
                     var pagination = nodes.pagination();
 
                     return createComponentVNode(2, List, {
-                        'context': node,
-                        'dom': dom,
-                        'limit': pagination.limit,
-                        'loading': loading,
-                        'nodes': nodes,
-                        'total': pagination.total
+                        context: node,
+                        dom: dom,
+                        limit: pagination.limit,
+                        loading: loading,
+                        nodes: nodes,
+                        total: pagination.total
                     });
-                } else if (this.props.dom.isDynamic && node.children) {
+                }
+                else if (this.props.dom.isDynamic && node.children) {
                     if (!node.hasLoadedChildren()) {
                         return createComponentVNode(2, EmptyList, {
-                            'text': 'Loading...'
+                            text: 'Loading...'
                         });
-                    } else {
+                    }
+                    else {
                         return createComponentVNode(2, EmptyList, {
-                            'text': 'No Results'
+                            text: 'No Results'
                         });
                     }
                 }
@@ -3047,8 +3110,8 @@
                 // @todo fix this boolean
                 if (this.props.dom._tree.config.editing.edit && !this.props.node.editing()) {
                     return createComponentVNode(2, EditToolbar, {
-                        'dom': this.props.dom,
-                        'node': this.props.node
+                        dom: this.props.dom,
+                        node: this.props.node
                     });
                 }
             }
@@ -3060,8 +3123,8 @@
 
                 if (hasVisibleChildren) {
                     return createComponentVNode(2, ToggleAnchor, {
-                        'collapsed': node.collapsed(),
-                        'node': node
+                        collapsed: node.collapsed(),
+                        node: node
                     });
                 }
             }
@@ -3073,13 +3136,13 @@
                 var node = this.props.node;
 
                 var li = normalizeProps(createVNode(1, 'li', null, [this.renderEditToolbar(), createVNode(1, 'div', 'title-wrap', [this.renderToggle(), this.renderCheckbox(), createComponentVNode(2, NodeAnchor, {
-                    'dom': this.props.dom,
-                    'editing': node.editing(),
-                    'expanded': node.expanded(),
-                    'hasOrWillHaveChildren': node.hasOrWillHaveChildren(),
-                    'node': node,
-                    'text': node.text
-                })], 0), createVNode(1, 'div', 'wholerow'), this.renderChildren()], 0, _extends({}, this.getAttributes()), null, function (elem) {
+                    dom: this.props.dom,
+                    editing: node.editing(),
+                    expanded: node.expanded(),
+                    hasOrWillHaveChildren: node.hasOrWillHaveChildren(),
+                    node: node,
+                    text: node.text
+                })], 0), createVNode(1, 'div', 'wholerow'), this.renderChildren()], 0, _extends({}, this.getAttributes()), null, function(elem) {
                     return _this2.node = _this2.props.node.itree.ref = elem;
                 }));
 
@@ -3091,9 +3154,9 @@
             }
         }]);
         return ListItem;
-    }(Component);
+    }(Component));
 
-    var List = function (_Component) {
+    var List = (function(_Component) {
         inherits(List, _Component);
 
         function List() {
@@ -3117,7 +3180,8 @@
                 event.preventDefault();
                 if (this.props.context) {
                     this.props.context.loadMore(event);
-                } else {
+                }
+                else {
                     this.props.dom._tree.loadMore(event);
                 }
             }
@@ -3125,7 +3189,7 @@
             key: 'renderLoadMoreNode',
             value: function renderLoadMoreNode() {
                 return createVNode(1, 'li', 'leaf detached', createVNode(1, 'a', 'title icon icon-more load-more', createTextVNode('Load More'), 2, {
-                    'onClick': this.loadMore.bind(this)
+                    onClick: this.loadMore.bind(this)
                 }), 2);
             }
         }, {
@@ -3145,7 +3209,7 @@
                 if (this.props.dom.config.deferredRendering) {
                     // Filter non-hidden/removed nodes and limit by this context's pagination
                     var count = 0;
-                    renderNodes = this.props.nodes.filter(function (n) {
+                    renderNodes = this.props.nodes.filter(function(n) {
                         var matches = !(n.hidden() || n.removed());
 
                         if (matches) {
@@ -3157,17 +3221,18 @@
                 }
 
                 // Render nodes as list items
-                var items = _.map(renderNodes, function (node) {
+                var items = _.map(renderNodes, function(node) {
                     return createComponentVNode(2, ListItem, {
-                        'dom': _this2.props.dom,
-                        'node': node
+                        dom: _this2.props.dom,
+                        node: node
                     }, node.id);
                 });
 
                 if (this.isDeferred() && pagination.limit < pagination.total) {
                     if (!this.props.loading) {
                         items.push(this.renderLoadMoreNode());
-                    } else {
+                    }
+                    else {
                         items.push(this.renderLoadingTextNode());
                     }
                 }
@@ -3176,9 +3241,9 @@
             }
         }]);
         return List;
-    }(Component);
+    }(Component));
 
-    var Tree = function (_Component) {
+    var Tree = (function(_Component) {
         inherits(Tree, _Component);
 
         function Tree() {
@@ -3198,8 +3263,8 @@
             value: function renderAddLink() {
                 if (this.props.dom._tree.config.editing.add) {
                     return createVNode(1, 'li', null, createVNode(1, 'a', 'btn icon icon-plus', null, 1, {
-                        'onClick': this.add.bind(this),
-                        'title': 'Add a new root node'
+                        onClick: this.add.bind(this),
+                        title: 'Add a new root node'
                     }), 2);
                 }
             }
@@ -3214,17 +3279,17 @@
                 var pagination = nodes.pagination();
 
                 return createComponentVNode(2, List, {
-                    'dom': dom,
-                    'limit': pagination.limit,
-                    'loading': loading,
-                    'nodes': nodes,
-                    'total': pagination.total,
+                    dom: dom,
+                    limit: pagination.limit,
+                    loading: loading,
+                    nodes: nodes,
+                    total: pagination.total,
                     children: this.renderAddLink()
                 });
             }
         }]);
         return Tree;
-    }(Component);
+    }(Component));
 
     /**
      * Default InspireTree rendering logic.
@@ -3233,7 +3298,7 @@
      * @return {InspireDOM} Default renderer.
      */
 
-    var InspireDOM = function () {
+    var InspireDOM = (function() {
         function InspireDOM(tree, opts) {
             var _this = this;
 
@@ -3294,7 +3359,7 @@
             var initialRender = true;
 
             // Apply changes
-            tree.on('changes.applied', function () {
+            tree.on('changes.applied', function() {
                 _this.renderNodes();
 
                 if (initialRender) {
@@ -3337,7 +3402,7 @@
                 if (this._tree.config.editable) {
                     classNames.push('editable');
 
-                    _.each(_.pickBy(this._tree.config.editing, _.identity), function (v, key) {
+                    _.each(_.pickBy(this._tree.config.editing, _.identity), function(v, key) {
                         classNames.push('editable-' + key);
                     });
                 }
@@ -3359,7 +3424,7 @@
                 }
 
                 // Sync browser focus to focus state
-                this._tree.on('node.focused', function (node) {
+                this._tree.on('node.focused', function(node) {
                     var elem = node.itree.ref.querySelector('.title');
                     if (elem !== document.activeElement) {
                         elem.focus();
@@ -3394,7 +3459,8 @@
             value: function clearSelection() {
                 if (document.selection && document.selection.empty) {
                     document.selection.empty();
-                } else if (window.getSelection) {
+                }
+                else if (window.getSelection) {
                     window.getSelection().removeAllRanges();
                 }
             }
@@ -3416,9 +3482,11 @@
 
                 if (target instanceof HTMLElement) {
                     $element = target;
-                } else if (_.isObject(target) && _.isObject(target[0])) {
+                }
+                else if (_.isObject(target) && _.isObject(target[0])) {
                     $element = target[0];
-                } else if (_.isString(target)) {
+                }
+                else if (_.isString(target)) {
                     var match = document.querySelector(target);
                     if (match) {
                         $element = match;
@@ -3654,8 +3722,8 @@
             key: 'renderNodes',
             value: function renderNodes(nodes) {
                 render(createComponentVNode(2, Tree, {
-                    'dom': this,
-                    'nodes': nodes || this._tree.nodes()
+                    dom: this,
+                    nodes: nodes || this._tree.nodes()
                 }), this.$target);
             }
         }, {
@@ -3680,7 +3748,7 @@
 
                     // Find all load-more links
                     var links = document.querySelectorAll('.load-more');
-                    _.each(links, function (link) {
+                    _.each(links, function(link) {
                         // Look for load-more links which overlap our "viewport"
                         var r = link.getBoundingClientRect();
                         var overlap = !(rect.right < r.left || rect.left > r.right || rect.bottom < r.top || rect.top > r.bottom);
@@ -3744,8 +3812,7 @@
             }
         }]);
         return InspireDOM;
-    }();
+    }());
 
     return InspireDOM;
-
 })));

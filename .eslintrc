@@ -67,7 +67,7 @@
             "allowBlockStart": true,
             "allowObjectStart": true
         }],
-        "linebreak-style": [2, "unix"],
+        "linebreak-style": [2, "windows"],
         "new-cap": 2,
         "new-parens": 2,
         "no-alert": 2,

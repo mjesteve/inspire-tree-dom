@@ -57,9 +57,10 @@ export default class InspireDOM {
         // If user didn't specify showCheckboxes,
         // but is using checkbox selection mode,
         // enable it automatically.
-        if (tree.config.selection.mode === 'checkbox' && !_.isBoolean(_.get(opts, 'showCheckboxes'))) {
-            this.config.showCheckboxes = true;
-        }
+        // Royale
+        // if (tree.config.selection.mode === 'checkbox' && !_.isBoolean(_.get(opts, 'showCheckboxes'))) {
+        //     this.config.showCheckboxes = true;
+        // }
 
         // Cache because we use in loops
         this.isDynamic = _.isFunction(this._tree.config.data);
