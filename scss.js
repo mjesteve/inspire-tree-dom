@@ -23,38 +23,41 @@ themes.forEach((theme) => {
             throw err;
         }
 
-        postcss([autoprefixer({ targetBrowsers: ['last 2 versions'] })]).process(result.css.toString()).then(postResult => {
-            var writeCSS = (css, gzip) => {
-                var filepath = path.join(DIST ? 'dist' : 'build', 'inspire-tree-' + theme + (MIN ? '.min' : '') + '.css');
-                fs.writeFile(filepath, css, (err) => {
-                    if (err) {
-                        throw err;
-                    }
-                });
-
-                if (gzip) {
-                    zlib.gzip(css, (zlibErr, res) => {
-                        if (zlibErr) {
-                            throw zlibErr;
+        const inputFilePath = path.join(__dirname, 'src', 'scss', theme + '.scss');
+        postcss([autoprefixer({ targetBrowsers: ['last 2 versions'] })])
+            .process(result.css.toString(), { from: inputFilePath })
+            .then(postResult => {
+                var writeCSS = (css, gzip) => {
+                    var filepath = path.join(DIST ? 'dist' : 'build', 'inspire-tree-' + theme + (MIN ? '.min' : '') + '.css');
+                    fs.writeFile(filepath, css, (err) => {
+                        if (err) {
+                            throw err;
                         }
+                    });
 
-                        fs.writeFile(filepath + '.gz', res, (err) => {
-                            if (err) {
-                                throw err;
+                    if (gzip) {
+                        zlib.gzip(css, (zlibErr, res) => {
+                            if (zlibErr) {
+                                throw zlibErr;
                             }
+
+                            fs.writeFile(filepath + '.gz', res, (err) => {
+                                if (err) {
+                                    throw err;
+                                }
+                            });
                         });
+                    }
+                };
+
+                if (MIN) {
+                    cssnano.process(postResult.css, { zIndex: false }).then((minifyResult) => {
+                        writeCSS(minifyResult.css, true);
                     });
                 }
-            };
-
-            if (MIN) {
-                cssnano.process(postResult.css, { zIndex: false }).then((minifyResult) => {
-                    writeCSS(minifyResult.css, true);
-                });
-            }
-            else {
-                writeCSS(postResult.css);
-            }
-        });
+                else {
+                    writeCSS(postResult.css);
+                }
+            });
     });
 });

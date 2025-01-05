@@ -5,7 +5,7 @@ import * as _ from 'lodash';
 import * as keys from './lib/keycodes';
 import { render } from 'inferno';
 import InspireTree from 'inspire-tree';
-import Tree from './dom/tree-royale';
+import Tree from './dom/tree';
 
 /**
  * Default InspireTree rendering logic.
@@ -57,10 +57,9 @@ export default class InspireDOM {
         // If user didn't specify showCheckboxes,
         // but is using checkbox selection mode,
         // enable it automatically.
-        // Royale
-        // if (tree.config.selection.mode === 'checkbox' && !_.isBoolean(_.get(opts, 'showCheckboxes'))) {
-        //     this.config.showCheckboxes = true;
-        // }
+        if (tree.config.selection.mode === 'checkbox' && !_.isBoolean(_.get(opts, 'showCheckboxes'))) {
+            this.config.showCheckboxes = true;
+        }
 
         // Cache because we use in loops
         this.isDynamic = _.isFunction(this._tree.config.data);

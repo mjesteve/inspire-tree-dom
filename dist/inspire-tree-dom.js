@@ -1,5 +1,5 @@
 /* Inspire Tree DOM
- * @version 4.0.6
+ * @version 5.0.0-alpha.2
  * https://github.com/helion3/inspire-tree-dom
  * @copyright Copyright 2015 Helion3, and other contributors
  * @license Licensed under MIT
@@ -2127,6 +2127,31 @@
         };
     }
 
+    /**
+     * Compares all keys on the given state. Returns true if any difference exists.
+     *
+     * @private
+     * @category DOM
+     * @param {object} previousState Previous state.
+     * @param {object} currentState  Current state.
+     * @return {boolean} Difference was found.
+     */
+    function stateComparator(previousState, currentState) {
+        // Always treat dirty flag as a state difference
+        var isDirty = currentState.dirty || false;
+
+        if (!isDirty) {
+            _.each(Object.keys(currentState), function (key) {
+                if (key !== 'dirty' && currentState[key] !== previousState[key]) {
+                    isDirty = true;
+                    return false;
+                }
+            });
+        }
+
+        return isDirty;
+    }
+
     var classCallCheck = function (instance, Constructor) {
       if (!(instance instanceof Constructor)) {
         throw new TypeError("Cannot call a class as a function");
@@ -2342,36 +2367,11 @@
         createClass(EmptyList, [{
             key: 'render',
             value: function render$$1() {
-                return createVNode(1, 'ol', null, createVNode(1, 'li', 'leaf', createVNode(1, 'span', 'title icon icon-file-empty empty', this.props.text, 0), 2), 2);
+                return createVNode(1, 'ol', null, createVNode(1, 'li', 'leaf first last only', createVNode(1, 'span', 'title icon icon-file-empty empty', this.props.text, 0), 2), 2);
             }
         }]);
         return EmptyList;
     }(Component);
-
-    /**
-     * Compares all keys on the given state. Returns true if any difference exists.
-     *
-     * @private
-     * @category DOM
-     * @param {object} previousState Previous state.
-     * @param {object} currentState  Current state.
-     * @return {boolean} Difference was found.
-     */
-    function stateComparator(previousState, currentState) {
-        // Always treat dirty flag as a state difference
-        var isDirty = currentState.dirty || false;
-
-        if (!isDirty) {
-            _.each(Object.keys(currentState), function (key) {
-                if (key !== 'dirty' && currentState[key] !== previousState[key]) {
-                    isDirty = true;
-                    return false;
-                }
-            });
-        }
-
-        return isDirty;
-    }
 
     var EditForm = function (_Component) {
         inherits(EditForm, _Component);
@@ -2756,6 +2756,18 @@
 
                 if (node.expanded()) {
                     classNames.push('expanded');
+                }
+
+                if (node.isFirstRenderable()) {
+                    classNames.push('first');
+                }
+
+                if (node.isLastRenderable()) {
+                    classNames.push('last');
+                }
+
+                if (node.isOnlyRenderable()) {
+                    classNames.push('only');
                 }
 
                 classNames.push(node.hasOrWillHaveChildren() ? 'folder' : 'leaf');

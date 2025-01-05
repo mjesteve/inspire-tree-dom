@@ -5,8 +5,8 @@ import classlist from '../lib/classlist';
 import EditToolbar from './edit-toolbar';
 import EmptyList from './empty-list';
 import InspireTree from 'inspire-tree';
-import List from './list';
-import NodeAnchor from './node-anchor.js';
+import List from './list-royale';
+import NodeAnchor from './node-anchor-royale.js';
 import ToggleAnchor from './toggle-anchor.js';
 
 export default class ListItem extends Component {

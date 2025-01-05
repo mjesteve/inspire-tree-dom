@@ -1,74 +1,71 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <meta charset="utf-8">
-        <title>InspireTree</title>
-        <link rel="stylesheet" href="../build/inspire-tree-light.css" />
-        <link rel="stylesheet" href="demo.css" />
-    </head>
-    <body>
-        <input type="text" placeholder="Search">
-        <div>
-            <div class="source-tree"></div>
-            <div class="toolbar">
-                <button class="move-one">&gt;</button>
-                <button class="revert-one">&lt;</button>
-                <button class="move-all">&gt;&gt;</button>
-                <button class="revert-all">&lt;&lt;</button>
-            </div>
-            <div class="dest-tree"></div>
+<head>
+    <meta charset="utf-8">
+    <title>InspireTree</title>
+    <link rel="stylesheet" href="../dist/inspire-tree-light.css" />
+    <link rel="stylesheet" href="demo.css" />
+</head>
+<body>
+    <input type="text" placeholder="Search">
+    <div>
+        <div class="source-tree"></div>
+        <div class="toolbar">
+            <button class="move-one">&gt;</button>
+            <button class="revert-one">&lt;</button>
+            <button class="move-all">&gt;&gt;</button>
+            <button class="revert-all">&lt;&lt;</button>
         </div>
-    </body>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.2.0/require.min.js"></script>
-    <script src="require.config.js"></script>
-    <script>
-        require([
-            'jquery',
-            'lodash',
-            'inspire-tree',
-            'inspire-tree-dom'
-        ], function($, _, InspireTree, InspireTreeDOM) {
-            var sourceTree = new InspireTree({
-                data: $.getJSON('sample-data/full.json'),
-                sort: 'text'
-            });
+        <div class="dest-tree"></div>
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <!-- Cargar lodash como script global -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.21/lodash.min.js"></script>
+    <!-- Cargar inspire-tree como script global -->
+    <script src="../../inspire-tree-fork/dist/inspire-tree.js"></script>
+    <!-- Cargar inspire-tree-dom -->
+    <script src="../dist/inspire-tree-dom.js"></script>
+    <script type="module">
+        // No es necesario importar lodash; ya está disponible como window._
+        const sourceTree = new InspireTree({
+            data: $.getJSON('sample-data/full.json'),
+            sort: 'text'
+        });
 
-            new InspireTreeDOM(sourceTree, {
-                target: '.source-tree'
-            });
+        new InspireTreeDOM(sourceTree, {
+            target: '.source-tree'
+        });
 
-            var destTree = new InspireTree({
-                data: [],
-                sort: 'text'
-            });
+        const destTree = new InspireTree({
+            data: [],
+            sort: 'text'
+        });
 
-            new InspireTreeDOM(destTree, {
-                target: '.dest-tree'
-            });
+        new InspireTreeDOM(destTree, {
+            target: '.dest-tree'
+        });
 
-            $('input').on('keyup', _.debounce(function(event) {
-                sourceTree.search(this.value);
-            }, 500));
+        $('input').on('keyup', _.debounce(function(event) {
+            sourceTree.search(this.value);
+        }, 500));
 
-            $('.move-one').on('click', function() {
-                var selected = sourceTree.selected();
-                selected.softRemove().copy(true).to(destTree);
+        $('.move-one').on('click', function() {
+            const selected = sourceTree.selected();
+            selected.softRemove().copy(destTree, true);
+            destTree.nodes(_.map(selected, 'id')).expandParents();
+        });
 
-                // If we moved a child node, expand nodes down to it
-                destTree.nodes(_.map(selected, 'id')).expandParents();
-            });
+        $('.revert-one').on('click', function() {
+            destTree.selected().softRemove().copy(sourceTree, true);
+        });
 
-            $('.revert-one').on('click', function() {
-                destTree.selected().softRemove().copy(true).to(sourceTree);
-            });
+        $('.move-all').on('click', function() {
+            sourceTree.nodes().softRemove().copy().to(destTree);
+        });
 
-            $('.move-all').on('click', function() {
-                sourceTree.nodes().softRemove().copy().to(destTree);
-            });
-
-            $('.revert-all').on('click', function() {
-                destTree.nodes().softRemove().copy().to(sourceTree);
-            });
+        $('.revert-all').on('click', function() {
+            destTree.nodes().softRemove().copy().to(sourceTree);
         });
     </script>
+</body>
 </html>

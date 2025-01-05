@@ -2853,9 +2853,10 @@ inquirer@^3.0.6:
     strip-ansi "^4.0.0"
     through "^2.3.6"
 
-inspire-tree@^5.0.1:
-  version "5.0.1"
-  resolved "https://registry.yarnpkg.com/inspire-tree/-/inspire-tree-5.0.1.tgz#9b096f95ef182d538f7117302b53a536ddee7ffc"
+inspire-tree@6.0.0-alpha.1:
+  version "6.0.0-alpha.1"
+  resolved "https://registry.yarnpkg.com/inspire-tree/-/inspire-tree-6.0.0-alpha.1.tgz#1c31ad4f30be71f65e92323b7ec65573dc2c6da5"
+  integrity sha512-NfQJcDY3LE4ObBSbuULcpwApmNXWNz/NeAS/vXhe/YjAh7cx/wmD+MmaZ2G2J56loZfzijIxa0ejg/AzZlRdAA==
   dependencies:
     es6-promise "^4.1.1"
     eventemitter2 "^5.0.1"
@@ -3939,7 +3940,7 @@ node-zopfli@^2.0.2:
     nan "^2.0.0"
     node-pre-gyp "^0.6.4"
 
-node-zopfli@^3.0.0:
+node-zopfli@^2.1.4:
   version "2.1.4"
   resolved "https://registry.yarnpkg.com/node-zopfli/-/node-zopfli-2.1.4.tgz#fb7f43ce622251ba11451b3e4dac5318d2e5bd61"
   integrity sha512-5kxbPxNQHbORFBNNf083V7h0dTFy6+C1W4ZA4qTXjpCQqEMzxAQFAOfi6BlCmXAkC/+Vr8d6h0XOmdjvp+9FNw==

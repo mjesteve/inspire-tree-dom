@@ -98,10 +98,12 @@ export default class NodeAnchor extends Component {
         // Build and set classnames
         let classNames = classlist(node, 'a').concat(['title', 'icon']);
 
-        if (!this.props.dom.config.showCheckboxes) {
-            let folder = this.props.expanded ? 'icon-folder-open' : 'icon-folder';
-            classNames.push(node.itree.icon || (this.props.hasOrWillHaveChildren ? folder : 'icon-file-empty'));
-        }
+        // Royale
+        // if (!this.props.dom.config.showCheckboxes) {
+        let folder = this.props.expanded ? 'icon-folder-open' : 'icon-folder';
+        classNames.push(node.itree.icon || (this.props.hasOrWillHaveChildren ? folder : 'icon-file-empty'));
+
+        // }
 
         attributes.class = attributes.className = classNames.join(' ');
 
