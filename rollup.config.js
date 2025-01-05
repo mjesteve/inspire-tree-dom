@@ -53,7 +53,7 @@ if (MIN) {
 }
 
 export default {
-    input: path.join('src', 'dom.js'),
+    input: path.join('src', 'dom_royale.js'),
     external: ['lodash', 'InspireTree', 'inspire-tree'],
     output: {
         file: path.join(DIST ? 'dist' : 'build', 'inspire-tree-dom' + (MIN ? '.min' : '') + '.js'),
