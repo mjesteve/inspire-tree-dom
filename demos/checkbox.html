@@ -12,27 +12,29 @@
         <p>Checkboxes are separate from selection:</p>
         <div class="checkbox-tree"></div>
     </body>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.2.0/require.min.js"></script>
-    <script src="require.config.js"></script>
-    <script>
-        require([
-            'jquery',
-            'lodash',
-            'inspire-tree',
-            'inspire-tree-dom'
-        ], function($, _, InspireTree, InspireTreeDOM) {
-            var tree1 = new InspireTree({
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <!-- Cargar lodash como script global -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.21/lodash.min.js"></script>
+    <!-- Cargar inspire-tree como script global (He creado un vinculo simbolico con la carpeta del proyecto dev) -->
+    <script src="../node_modules/inspire-tree/dist/inspire-tree.js"></script>
+    <!-- Cargar inspire-tree-dom -->
+    <script src="../dist/inspire-tree-dom.js"></script>
+    <script type="module">
+        
+        // Con la version de Inspire-Tree Royale hay que indicarle al tree que checkedIsSelected = true para que una el checked y el selected.
+        const tree1 = new InspireTree({
                 data: $.getJSON('sample-data/full.json'),
                 selection: {
-                    mode: 'checkbox'
+                    mode: 'checkbox', checkedIsSelected: true
                 }
             });
-
+            // Con la version del DOM de Royale hay que especificar que se vean los checkboxes (showCheckboxes = true)
             new InspireTreeDOM(tree1, {
+                showCheckboxes: true,
                 target: '.selection-tree'
             });
 
-            var tree2 = new InspireTree({
+            const tree2 = new InspireTree({
                 data: $.getJSON('sample-data/full.json'),
             });
 
@@ -40,6 +42,6 @@
                 showCheckboxes: true,
                 target: '.checkbox-tree'
             });
-        });
+            
     </script>
 </html>

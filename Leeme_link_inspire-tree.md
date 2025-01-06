@@ -1,3 +1,7 @@
+Para poder compilar la Version NodeJS debe ser 14.21.3 (probar sinó con la 13.14.0)
+nvm use 14.21.3
+---
+
 Para cambiar la referencia de un paquete Node.js como `inspire-tree` en `inspire-tree-dom` para que use el código fuente local en lugar del paquete instalado desde npm, puedes seguir estos pasos:
 
 ---
@@ -43,6 +47,14 @@ Asegúrate de que el código fuente de `inspire-tree` esté listo para ser utili
 
    Este comando hará que `inspire-tree-dom` use la versión local de `inspire-tree` en lugar de la publicada en npm.
 
+   Cambiamos en package.json la versión de inspire-tree a la local.
+   Para verificar que el enlace funciona:
+   
+   ```bash
+   PS E:\mjesteve\LibreriasJS\inspire-tree-dom-fork> npm ls inspire-tree
+   inspire-tree-dom@5.0.0-alpha.2 E:\mjesteve\LibreriasJS\inspire-tree-dom-fork
+   └── inspire-tree@7.0.11-dev -> .\..\inspire-tree-fork
+   ```
 ---
 
 ### **3. Verifica que el enlace funciona**

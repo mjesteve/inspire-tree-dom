@@ -5,12 +5,21 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "Launch File Allow File Access - Tests",
+            "name": "DEMO - bucket.html",
             "type": "chrome",
             "request": "launch",
             "sourceMaps": true,
             "runtimeArgs": ["--allow-file-access-from-files", "--auto-ssl-client-auth"],
             "url": "file:///${workspaceRoot}/demos/bucket.html",
+            "webRoot": "${workspaceRoot}\\demos"
+        },
+        {
+            "name": "DEMO - checkbox.html",
+            "type": "chrome",
+            "request": "launch",
+            "sourceMaps": true,
+            "runtimeArgs": ["--allow-file-access-from-files", "--auto-ssl-client-auth"],
+            "url": "file:///${workspaceRoot}/demos/checkbox.html",
             "webRoot": "${workspaceRoot}\\demos"
         }
     ]
